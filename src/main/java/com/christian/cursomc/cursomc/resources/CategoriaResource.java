@@ -1,6 +1,7 @@
 package com.christian.cursomc.cursomc.resources;
 
 import com.christian.cursomc.cursomc.domain.Categoria;
+import com.christian.cursomc.cursomc.dto.CategoriaDTO;
 import com.christian.cursomc.cursomc.services.CategoriaService;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/categorias")
@@ -47,4 +49,14 @@ public class CategoriaResource {
         categoriaService.delete(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping
+    public ResponseEntity<List<CategoriaDTO>> findAll() {
+        List<Categoria> list = categoriaService.findAll();
+        List<CategoriaDTO> listDTO = list.stream().map(obj -> new CategoriaDTO(obj))
+                .collect(Collectors.toList());
+        return ResponseEntity.ok().body(listDTO);
+    }
+
+
 }
