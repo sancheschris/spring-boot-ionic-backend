@@ -1,6 +1,7 @@
 package com.christian.cursomc.cursomc.services;
 
 import com.christian.cursomc.cursomc.domain.Categoria;
+import com.christian.cursomc.cursomc.domain.Cliente;
 import com.christian.cursomc.cursomc.dto.CategoriaDTO;
 import com.christian.cursomc.cursomc.repositories.CategoriaRepository;
 import com.christian.cursomc.cursomc.services.exceptions.DataIntegrityException;
@@ -28,7 +29,8 @@ public class CategoriaService  {
     }
 
     public Categoria insert(Categoria obj) {
-        obj.setId(null);
+        Categoria newObj = find(obj.getId());
+        updateData(newObj, obj);
         return repo.save(obj);
     }
 
@@ -58,4 +60,9 @@ public class CategoriaService  {
     public Categoria fromDTO(CategoriaDTO objDto) {
         return new Categoria(objDto.getId(), objDto.getNome());
     }
+
+    private void updateData(Categoria newObj, Categoria obj) {
+        newObj.setNome(obj.getNome());
+    }
+
 }
