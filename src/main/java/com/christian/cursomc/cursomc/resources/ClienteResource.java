@@ -4,14 +4,17 @@ import com.christian.cursomc.cursomc.domain.Categoria;
 import com.christian.cursomc.cursomc.domain.Cliente;
 import com.christian.cursomc.cursomc.dto.CategoriaDTO;
 import com.christian.cursomc.cursomc.dto.ClienteDTO;
+import com.christian.cursomc.cursomc.dto.ClienteNewDTO;
 import com.christian.cursomc.cursomc.services.CategoriaService;
 import com.christian.cursomc.cursomc.services.ClienteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,6 +52,15 @@ public class ClienteResource {
         List<ClienteDTO> listDTO = list.stream().map(obj -> new ClienteDTO(obj))
                 .collect(Collectors.toList());
         return ResponseEntity.ok().body(listDTO);
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> insert(@Valid @RequestBody ClienteNewDTO objDto) {
+        Cliente obj = clienteService.fromDTO(objDto);
+        obj = clienteService.insert(obj);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(obj.getId()).toUri();
+        return ResponseEntity.created(uri).build();
     }
 
     @GetMapping(value = "/page")
